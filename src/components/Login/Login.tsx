@@ -1,14 +1,12 @@
-import React from 'react';
+import React, { FC } from 'react';
 import logo from '../../assets/img/logo.svg';
-import Greetings from '../../containers/Greetings/Greetings';
-import './Popup.css';
+import './Login.scss';
 
-const Popup = () => {
+const LoginComponent: FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
+    <div className="login-section">
+      <img src={logo} className="app-logo" alt="logo" />
+      {/* <p>
           Edit <code>src/pages/Popup/Popup.js</code> and save to reload.
         </p>
         <a
@@ -18,10 +16,9 @@ const Popup = () => {
           rel="noopener noreferrer"
         >
           Learn React!
-        </a>
-      </header>
+        </a> */}
     </div>
   );
 };
 
-export default Popup;
+export default LoginComponent;

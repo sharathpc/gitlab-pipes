@@ -1,30 +1,25 @@
 {
+  "name": "GitLab Pipes",
   "manifest_version": 3,
-  "name": "Chrome Extension with React & Webpack",
-  "options_page": "options.html",
-  "background": { "service_worker": "background.bundle.js" },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkb7KlCpN4uaxaR1C0XUU9f8CO4R/JIb+ZgP4OF4KKxcJYoofcDrph4c+YVWHeUZGpXWsir6oMXJcCoQprcjkuCxTW9TnKJ3+IrJ7FyrxJuZqvgbhlt7tRkuBrbYLUQSOEIdvhaxmThPLJGvvj6dVdA47MsNCIvpfWe9ybSvzO9sgNXKBRqwduKank2v5iy5q3isj+T0AzmmYSIC9i3KYAy+YR0ZpB8WFvcp/wgen/RLUqPzA2mPZwq4BRQ1W41PqhmDJ60HiCN2yHjEe7u7qOgRvidbWd2R3+DYaSp5Cx8sQ11F4V2uahuI5dRmlvPjPlbrWUpkBguI5FoeUu9m3ewIDAQAB",
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
   "action": {
     "default_popup": "popup.html",
-    "default_icon": "icon-34.png"
+    "default_icon": "icon16.png"
   },
-  "chrome_url_overrides": {
-    "newtab": "newtab.html"
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.bundle.js"
   },
-  "icons": {
-    "128": "icon-128.png"
-  },
-  "content_scripts": [
-    {
-      "matches": ["http://*/*", "https://*/*", "<all_urls>"],
-      "js": ["contentScript.bundle.js"],
-      "css": ["content.styles.css"]
-    }
+  "permissions": [
+    "identity",
+    "storage"
   ],
-  "devtools_page": "devtools.html",
-  "web_accessible_resources": [
-    {
-      "resources": ["content.styles.css", "icon-128.png", "icon-34.png"],
-      "matches": []
-    }
+  "host_permissions": [
+    "https://*.gitlab.com/*"
   ]
 }

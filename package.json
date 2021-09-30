@@ -1,15 +1,11 @@
 {
-  "name": "chrome-extension-boilerplate-react",
-  "version": "4.0.1",
-  "description": "A chrome extension boilerplate built with React 17 and Webpack 5",
+  "name": "gitlab-pipes",
+  "version": "0.0.1",
+  "description": "GitLab pipline jobs related information",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/lxieyang/chrome-extension-boilerplate-react.git"
-  },
   "scripts": {
-    "build": "node utils/build.js",
-    "start": "node utils/webserver.js",
+    "build": "NODE_ENV=production node utils/build.js",
+    "develop": "node utils/webserver.js",
     "prettier": "prettier --write '**/*.{js,jsx,css,html}'"
   },
   "dependencies": {
@@ -17,6 +13,7 @@
     "@types/chrome": "0.0.132",
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
+    "axios": "^0.21.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-hot-loader": "^4.13.0"
