@@ -3,16 +3,16 @@ function dec2hex(dec) {
 }
 
 function sha256(plain) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(plain);
+    let encoder = new TextEncoder();
+    let data = encoder.encode(plain);
     return crypto.subtle.digest("SHA-256", data);
 }
 
 function base64urlencode(a) {
     let str = "";
-    const bytes = new Uint8Array(a);
-    const len = bytes.byteLength;
-    for (const i = 0; i < len; i++) {
+    let bytes = new Uint8Array(a);
+    let len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
         str += String.fromCharCode(bytes[i]);
     }
     return btoa(str)
@@ -22,14 +22,14 @@ function base64urlencode(a) {
 }
 
 export function generateCodeVerifier() {
-    const array = new Uint32Array(56 / 2);
+    let array = new Uint32Array(56 / 2);
     crypto.getRandomValues(array);
     return Array.from(array, dec2hex).join("");
 }
 
 export async function generateCodeChallengeFromVerifier(v) {
-    const hashed = await sha256(v);
-    const base64encoded = base64urlencode(hashed);
+    let hashed = await sha256(v);
+    let base64encoded = base64urlencode(hashed);
     return base64encoded;
 }
 
