@@ -38,6 +38,19 @@ import { generateCodeVerifier, generateCodeChallengeFromVerifier } from './chall
         chrome.storage.local.get(null, (items) => {
             storageCache = { ...items };
             switch (request.action) {
+                case 'token': {
+                    setTimeout(() => {
+                        if (is_user_signed_in()) {
+                            sendResponse({
+                                status: true,
+                                token: storageCache.token_data.access_token
+                            })
+                        } else {
+                            sendResponse({ status: false, token: null });
+                        }
+                    }, 1000)
+                    break;
+                }
                 case 'login': {
                     is_user_signed_in() ? sendResponse({
                         status: true,
@@ -64,7 +77,7 @@ import { generateCodeVerifier, generateCodeChallengeFromVerifier } from './chall
                         .catch(err => console.log(err));
                     break;
                 }
-                case 'token': {
+                case 'logout': {
                     logoutUser();
                     sendResponse({ status: true });
                     break;
@@ -98,7 +111,7 @@ import { generateCodeVerifier, generateCodeChallengeFromVerifier } from './chall
                                 status: true,
                                 token: storageCache.token_data.access_token
                             });
-                        }, 10000)
+                        }, 5000)
                     })
                     .catch(err => console.log(err));
             }

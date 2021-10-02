@@ -1,27 +1,17 @@
-import React, { FC } from 'react';
-import { Router, Switch, Route } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
+import React from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import './Popup.scss';
 
 import Login from '../../components/Login';
 import Dashboard from '../../components/Dashboard';
-import './Popup.scss';
 
-const history = createMemoryHistory();
-const Popup: FC = () => {
-  chrome.runtime.sendMessage({ action: 'login' }, (res) => {
-    if (res.status) {
-      console.log(res.token);
-    } else {
-      console.log('error');
-    };
-  });
-
+const Popup: React.FC = () => {
   return (
-    <Router history={history}>
+    <Router>
       <div className="app">
         <Switch>
+          <Route exact path='/dashboard' component={Dashboard} />
           <Route path='/' component={Login} />
-          <Route path='/dashboard' component={Dashboard} />
         </Switch>
       </div>
     </Router>

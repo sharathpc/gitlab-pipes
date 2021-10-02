@@ -1,24 +1,54 @@
-import React, { FC } from 'react';
-import logo from '../../assets/img/logo.svg';
+import React, { useEffect } from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { message } from '../../types';
+import '../../assets/styles/tailwind.css';
 import './Login.scss';
 
-const LoginComponent: FC = () => {
+import gitlabLogo from '../../assets/img/logo.svg';
+import Preloader from '../Preloader';
+
+interface IProps extends RouteComponentProps<any> { }
+
+const LoginComponent: React.FC<IProps> = ({ history }: IProps) => {
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoginLoading, setIsLoginLoading] = React.useState(false);
+
+  useEffect(() => {
+    const getToken = () => {
+      chrome.runtime.sendMessage({ action: 'token' }, (res: message) => {
+        setIsLoading(false);
+        if (res.status) history.push('/dashboard', { token: res.token });
+      });
+    }
+    getToken();
+  }, []);
+
+  const triggerLogin = () => {
+    setIsLoginLoading(true);
+    chrome.runtime.sendMessage({ action: 'login' }, (res: message) => {
+      setIsLoginLoading(false);
+      if (res.status) history.push('/dashboard', { token: res.token });
+    });
+  }
+
+  const LoginButton: React.FC = () => (
+    <button
+      className="text-base rounded bg-blue-600 text-white px-4 py-2 flex flex-row justify-center gap-3 items-center hover:bg-blue-700 duration-100 ease-in-out"
+      onClick={triggerLogin}
+    >
+      {isLoginLoading ? <Preloader /> : <React.Fragment>
+        <img src={gitlabLogo} alt="gitlab-icon" className="w-6 h-6" />
+        Sign with GitLab
+      </React.Fragment>}
+    </button>
+  )
+
   return (
     <div className="login-section">
-      <img src={logo} className="app-logo" alt="logo" />
-      {/* <p>
-          Edit <code>src/pages/Popup/Popup.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React!
-        </a> */}
+      <img src={gitlabLogo} className="h-20 m-6" alt="logo" />
+      {isLoading ? <Preloader /> : <LoginButton />}
     </div>
   );
 };
 
-export default LoginComponent;
+export default withRouter(LoginComponent);

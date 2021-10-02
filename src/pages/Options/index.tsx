@@ -1,8 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
+import './index.scss';
 
 import Options from './Options';
-import './index.css';
 
 render(
   <Options title={'settings'} />,

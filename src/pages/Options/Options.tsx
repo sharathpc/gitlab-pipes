@@ -1,11 +1,11 @@
-import React, { FC } from 'react';
+import React from 'react';
 import './Options.scss';
 
-interface Props {
+interface IProps {
   title: string;
 }
 
-const Options: FC<Props> = ({ title }: Props) => {
+const Options: React.FC<IProps> = ({ title }: IProps) => {
   return (
     <div className="OptionsContainer">{title.toUpperCase()} PAGE</div>
   );
