@@ -1,29 +1,66 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import TimeAgo from 'timeago-react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Location } from 'history';
 import '../../assets/styles/tailwind.css';
 import './Projects.scss';
 
-interface IProps extends RouteComponentProps<any> {
-  token: string,
-  location: ILocationState
-}
-interface ILocationState extends Location<any> {
-  token: string,
-  apiUrl: string
-}
+import { IProject } from '../../types';
+import { getProjects } from '../../services';
+import Preloader from '../Preloader';
 
-const ProjectsComponent: React.FC<IProps> = ({ location }: IProps) => {
-  const TOKEN = location.state.token;
-  const API_URL = location.state.apiUrl;
+interface IProps extends RouteComponentProps<any> { }
+
+const ProjectsComponent: React.FC<IProps> = ({ history }) => {
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [projects, setProjects] = React.useState([]);
+
+  const getGitLabProjects = () => {
+    getProjects()
+      .then(response => setProjects(response.data))
+      .finally(() => setIsLoading(false));
+  }
+
+  useEffect(() => getGitLabProjects(), []);
 
   return (
-    <div className="projects-section">
-      <div>Projects</div>
-      <div>{TOKEN}</div>
-      <div>{API_URL}</div>
+    <div className="h-full projects-section">
+      <div className="flex items-center">
+        <i className="icon-arrow-circle-left cursor-pointer py-1 px-4" onClick={() => history.goBack()}></i>
+        <div className="text-lg font-semibold">Projects List</div>
+      </div>
+      {
+        isLoading ?
+          <div className="flex justify-center items-center h-full">
+            <Preloader />
+          </div> :
+          <ul className="max-h-full overflow-y-auto">
+            {projects.map((project: IProject) => <ProjectItem key={project.id} project={project} />)}
+          </ul>
+      }
     </div>
   );
 };
+
+const ProjectItem: React.FC<{ project: IProject }> = ({ project }) => {
+  return (
+    <li className="flex justify-between items-center p-2 mb-1 rounded-md hover:bg-gray-700">
+      <div className="flex items-center">
+        <div className="w-8 h-8 p-1 mr-2 text-center text-base rounded-md bg-blue-300">{project.name.substring(0, 1).toUpperCase()}</div>
+        <div>
+          <a href={project.web_url} target="_blank">
+            <span>{project.namespace.name} / </span>
+            <span className="font-bold">{project.name}</span>
+          </a>
+          <div>
+            <TimeAgo datetime={project.last_activity_at} />
+          </div>
+        </div>
+      </div>
+      <div>
+
+      </div>
+    </li>
+  )
+}
 
 export default withRouter(ProjectsComponent);

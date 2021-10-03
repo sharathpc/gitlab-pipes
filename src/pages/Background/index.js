@@ -3,6 +3,7 @@ import { generateCodeVerifier, generateCodeChallengeFromVerifier } from './chall
 (async () => {
     //saras
     const API_BASE_URL = 'https://gitlab.sarasanalytics.com';
+    const API_REQUEST_URL = `${API_BASE_URL}/api/v4`;
     const CLIENT_ID = encodeURIComponent('3a6044c50a6f459cee50a78444e1330f1f5b2b6b81bebe64d3e5d80bbd0e8a1f');
     const CLIENT_SECRET = encodeURIComponent('b0cff03bc795a3824745f2793cb6a1f78dac3103867d518b323a23d77975d3e4');
 
@@ -44,7 +45,7 @@ import { generateCodeVerifier, generateCodeChallengeFromVerifier } from './chall
                             sendResponse({
                                 status: true,
                                 token: storageCache.token_data.access_token,
-                                apiUrl: API_BASE_URL
+                                apiUrl: API_REQUEST_URL
                             })
                         } else {
                             sendResponse({ status: false, token: null });
@@ -73,7 +74,7 @@ import { generateCodeVerifier, generateCodeChallengeFromVerifier } from './chall
                             sendResponse({
                                 status: true,
                                 token: storageCache.token_data.access_token,
-                                apiUrl: API_BASE_URL
+                                apiUrl: API_REQUEST_URL
                             });
                         })
                         .catch(err => console.log(err));
@@ -112,7 +113,7 @@ import { generateCodeVerifier, generateCodeChallengeFromVerifier } from './chall
                             sendResponse({
                                 status: true,
                                 token: storageCache.token_data.access_token,
-                                apiUrl: API_BASE_URL
+                                apiUrl: API_REQUEST_URL
                             });
                         }, 5000)
                     })

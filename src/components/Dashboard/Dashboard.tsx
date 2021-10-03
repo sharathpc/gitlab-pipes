@@ -1,27 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Location } from 'history';
+
+import { getProjects } from '../../services';
 import '../../assets/styles/tailwind.css';
 import './Dashboard.scss';
 
-interface IProps extends RouteComponentProps<any> {
-  token: string,
-  location: ILocationState
-}
-interface ILocationState extends Location<any> {
-  token: string,
-  apiUrl: string
-}
+interface IProps extends RouteComponentProps<any> { }
 
-const DashboardComponent: React.FC<IProps> = ({ location }: IProps) => {
-  const TOKEN = location.state.token;
-  const API_URL = location.state.apiUrl;
+const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
+  /* const getGitLabProjects = () => {
+    getProjects()
+      .then(response => {
+        console.log(response.data)
+      });
+  } */
+
+  //useEffect(() => getGitLabProjects(), []);
 
   return (
-    <div className="dashboard-section">
-      <div>Dashboard</div>
-      <div>{TOKEN}</div>
-      <div>{API_URL}</div>
+    <div className="h-full dashboard-section">
+      <div className="flex justify-between items-center">
+        <div className="text-lg font-semibold ml-4">Dashboard</div>
+        <i className="icon-star cursor-pointer py-1 px-4" onClick={() => history.push('projects')}></i>
+      </div>
     </div>
   );
 };
