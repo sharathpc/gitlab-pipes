@@ -17,7 +17,12 @@ const LoginComponent: React.FC<IProps> = ({ history }: IProps) => {
     const getToken = () => {
       chrome.runtime.sendMessage({ action: 'token' }, (res: message) => {
         setIsLoading(false);
-        if (res.status) history.push('/dashboard', { token: res.token });
+        if (res.status) {
+          history.push('/dashboard', {
+            token: res.token,
+            apiUrl: res.apiUrl
+          });
+        }
       });
     }
     getToken();
@@ -27,7 +32,12 @@ const LoginComponent: React.FC<IProps> = ({ history }: IProps) => {
     setIsLoginLoading(true);
     chrome.runtime.sendMessage({ action: 'login' }, (res: message) => {
       setIsLoginLoading(false);
-      if (res.status) history.push('/dashboard', { token: res.token });
+      if (res.status) {
+        history.push('/dashboard', {
+          token: res.token,
+          apiUrl: res.apiUrl
+        });
+      }
     });
   }
 

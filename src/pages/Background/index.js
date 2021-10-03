@@ -43,7 +43,8 @@ import { generateCodeVerifier, generateCodeChallengeFromVerifier } from './chall
                         if (is_user_signed_in()) {
                             sendResponse({
                                 status: true,
-                                token: storageCache.token_data.access_token
+                                token: storageCache.token_data.access_token,
+                                apiUrl: API_BASE_URL
                             })
                         } else {
                             sendResponse({ status: false, token: null });
@@ -71,7 +72,8 @@ import { generateCodeVerifier, generateCodeChallengeFromVerifier } from './chall
                             chrome.storage.local.set(storageCache);
                             sendResponse({
                                 status: true,
-                                token: storageCache.token_data.access_token
+                                token: storageCache.token_data.access_token,
+                                apiUrl: API_BASE_URL
                             });
                         })
                         .catch(err => console.log(err));
@@ -109,7 +111,8 @@ import { generateCodeVerifier, generateCodeChallengeFromVerifier } from './chall
                         setTimeout(() => {
                             sendResponse({
                                 status: true,
-                                token: storageCache.token_data.access_token
+                                token: storageCache.token_data.access_token,
+                                apiUrl: API_BASE_URL
                             });
                         }, 5000)
                     })

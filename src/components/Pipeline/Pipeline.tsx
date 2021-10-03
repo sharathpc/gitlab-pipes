@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Location } from 'history';
 import '../../assets/styles/tailwind.css';
-import './Dashboard.scss';
+import './Pipeline.scss';
 
 interface IProps extends RouteComponentProps<any> {
   token: string,
@@ -13,17 +13,17 @@ interface ILocationState extends Location<any> {
   apiUrl: string
 }
 
-const DashboardComponent: React.FC<IProps> = ({ location }: IProps) => {
+const PipelineComponent: React.FC<IProps> = ({ location }: IProps) => {
   const TOKEN = location.state.token;
   const API_URL = location.state.apiUrl;
 
   return (
-    <div className="dashboard-section">
-      <div>Dashboard</div>
+    <div className="pipeline-section">
+      <div>Pipeline</div>
       <div>{TOKEN}</div>
       <div>{API_URL}</div>
     </div>
   );
 };
 
-export default withRouter(DashboardComponent);
+export default withRouter(PipelineComponent);
