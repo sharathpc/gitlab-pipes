@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { message } from '../../types';
+import { IMessage } from '../../types';
 import '../../assets/styles/tailwind.css';
 import './Login.scss';
 
@@ -15,10 +15,10 @@ const LoginComponent: React.FC<IProps> = ({ history }: IProps) => {
   const [isLoginLoading, setIsLoginLoading] = React.useState(false);
 
   const getToken = () => {
-    chrome.runtime.sendMessage({ action: 'token' }, (res: message) => {
+    chrome.runtime.sendMessage({ action: 'token' }, (res: IMessage) => {
       setIsLoading(false);
       if (res.status) {
-        updateRequestDetails(res.apiUrl, res.token);
+        updateRequestDetails(res.baseUrl, res.token);
         history.push('/dashboard');
       }
     });
@@ -26,10 +26,10 @@ const LoginComponent: React.FC<IProps> = ({ history }: IProps) => {
 
   const triggerLogin = () => {
     setIsLoginLoading(true);
-    chrome.runtime.sendMessage({ action: 'login' }, (res: message) => {
+    chrome.runtime.sendMessage({ action: 'login' }, (res: IMessage) => {
       setIsLoginLoading(false);
       if (res.status) {
-        updateRequestDetails(res.apiUrl, res.token);
+        updateRequestDetails(res.baseUrl, res.token);
         history.push('/dashboard');
       }
     });

@@ -2,8 +2,7 @@ import { generateCodeVerifier, generateCodeChallengeFromVerifier } from './chall
 
 (async () => {
     //saras
-    const API_BASE_URL = 'https://gitlab.sarasanalytics.com';
-    const API_REQUEST_URL = `${API_BASE_URL}/api/v4`;
+    const BASE_URL = 'https://gitlab.sarasanalytics.com';
     const CLIENT_ID = encodeURIComponent('3a6044c50a6f459cee50a78444e1330f1f5b2b6b81bebe64d3e5d80bbd0e8a1f');
     const CLIENT_SECRET = encodeURIComponent('b0cff03bc795a3824745f2793cb6a1f78dac3103867d518b323a23d77975d3e4');
 
@@ -16,17 +15,17 @@ import { generateCodeVerifier, generateCodeChallengeFromVerifier } from './chall
     const CODE_CHALLENGE_METHOD = encodeURIComponent('S256');
 
     function create_auth_endpoint() {
-        return `${API_BASE_URL}/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&state=${STATE}&scope=${SCOPE}&code_challenge=${CODE_CHALLENGE}&code_challenge_method=${CODE_CHALLENGE_METHOD}`;
+        return `${BASE_URL}/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&state=${STATE}&scope=${SCOPE}&code_challenge=${CODE_CHALLENGE}&code_challenge_method=${CODE_CHALLENGE_METHOD}`;
     }
 
     function create_token_endpoint(code) {
         const GRANT_TYPE = encodeURIComponent('authorization_code');
-        return `${API_BASE_URL}/oauth/token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&code=${code}&grant_type=${GRANT_TYPE}&redirect_uri=${REDIRECT_URI}&code_verifier=${CODE_VERIFIER}`;
+        return `${BASE_URL}/oauth/token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&code=${code}&grant_type=${GRANT_TYPE}&redirect_uri=${REDIRECT_URI}&code_verifier=${CODE_VERIFIER}`;
     }
 
     function refresh_token_endpoint(refreshToken) {
         const GRANT_TYPE = encodeURIComponent('refresh_token');
-        return `${API_BASE_URL}/oauth/token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&refresh_token=${refreshToken}&grant_type=${GRANT_TYPE}&redirect_uri=${REDIRECT_URI}&code_verifier=${CODE_VERIFIER}`;
+        return `${BASE_URL}/oauth/token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&refresh_token=${refreshToken}&grant_type=${GRANT_TYPE}&redirect_uri=${REDIRECT_URI}&code_verifier=${CODE_VERIFIER}`;
     }
 
     let storageCache = {};
@@ -40,17 +39,17 @@ import { generateCodeVerifier, generateCodeChallengeFromVerifier } from './chall
             storageCache = { ...items };
             switch (request.action) {
                 case 'token': {
-                    setTimeout(() => {
-                        if (is_user_signed_in()) {
-                            sendResponse({
-                                status: true,
-                                token: storageCache.token_data.access_token,
-                                apiUrl: API_REQUEST_URL
-                            })
-                        } else {
-                            sendResponse({ status: false, token: null });
-                        }
-                    }, 1000)
+                    //setTimeout(() => {
+                    if (is_user_signed_in()) {
+                        sendResponse({
+                            status: true,
+                            token: storageCache.token_data.access_token,
+                            baseUrl: BASE_URL
+                        })
+                    } else {
+                        sendResponse({ status: false, token: null });
+                    }
+                    //}, 1000)
                     break;
                 }
                 case 'login': {
@@ -66,16 +65,20 @@ import { generateCodeVerifier, generateCodeChallengeFromVerifier } from './chall
                     })
                         .then(response => response.json())
                         .then(jsondata => {
-                            storageCache = {
-                                user_signed_in: true,
-                                token_data: jsondata
+                            if (jsondata.error === 'invalid_grant') {
+                                authenticateUser(sendResponse);
+                            } else {
+                                storageCache = {
+                                    user_signed_in: true,
+                                    token_data: jsondata
+                                }
+                                chrome.storage.local.set(storageCache);
+                                sendResponse({
+                                    status: true,
+                                    token: storageCache.token_data.access_token,
+                                    baseUrl: BASE_URL
+                                });
                             }
-                            chrome.storage.local.set(storageCache);
-                            sendResponse({
-                                status: true,
-                                token: storageCache.token_data.access_token,
-                                apiUrl: API_REQUEST_URL
-                            });
                         })
                         .catch(err => console.log(err));
                     break;
@@ -109,13 +112,13 @@ import { generateCodeVerifier, generateCodeChallengeFromVerifier } from './chall
                             token_data: jsondata
                         }
                         chrome.storage.local.set(storageCache);
-                        setTimeout(() => {
-                            sendResponse({
-                                status: true,
-                                token: storageCache.token_data.access_token,
-                                apiUrl: API_REQUEST_URL
-                            });
-                        }, 5000)
+                        //setTimeout(() => {
+                        sendResponse({
+                            status: true,
+                            token: storageCache.token_data.access_token,
+                            baseUrl: BASE_URL
+                        });
+                        //}, 5000)
                     })
                     .catch(err => console.log(err));
             }

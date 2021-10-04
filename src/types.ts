@@ -1,22 +1,21 @@
-export interface message {
+export interface IMessage {
     status: boolean;
-    apiUrl: string;
+    baseUrl: string;
     token: string;
 }
 
 export interface IProject {
-    id: number,
-    web_url: string,
+    id: string,
     name: string,
-    last_activity_at: string
-    avatar_url?: string,
-    namespace: IProjectNamespace
+    webUrl: string,
+    lastActivityAt: string,
+    bookmarkInd: boolean,
+    group: IProjectGroup
 }
 
-export interface IProjectNamespace {
-    id: number,
+export interface IProjectGroup {
+    id: string,
     name: string,
-    kind: string,
-    avatar_url?: string,
-    web_url: string
+    avatarUrl?: string,
+    webUrl: string
 }
