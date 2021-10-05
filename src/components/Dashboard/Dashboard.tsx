@@ -52,13 +52,13 @@ const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
 
   const ProjectItem: React.FC<{ project: IProject }> = ({ project }) => {
     return (
-      <li className="py-2 px-3 mb-1 rounded-md hover:bg-gray-700">
+      <li className={`py-2 px-3 mb-1 rounded-md ${project.isExpanded ? 'shadow-md bg-gray-800' : 'hover:bg-gray-700'}`}>
         <div className="overflow-hidden">
           <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleShowProject(project)}>
             <div className="flex items-center">
-              <div className="w-8 h-8 p-1 mr-2 text-center text-base rounded-md bg-blue-300">{project.name.substring(0, 1).toUpperCase()}</div>
+              <div className="w-8 h-8 p-1 mr-2 text-center text-base rounded-md bg-blue-300 text-white">{project.name.substring(0, 1).toUpperCase()}</div>
               <div>
-                <a href={project.webUrl} target="_blank" className="font-bold">{project.name}</a>
+                <a href={project.webUrl} target="_blank" className="text-gray-200 font-bold">{project.name}</a>
                 <div className="flex items-center">
                   <img src={project.group.avatarUrl} alt={project.group.name} className="w-4 h-4 rounded-full" />
                   <span>{project.group.name}</span>
@@ -74,10 +74,10 @@ const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
             <table className="mt-2 w-full border-separate border-spacing-5">
               <thead>
                 <tr>
-                  <th className="w-20">Status</th>
-                  <th className="w-20 text-center">Triggerer</th>
-                  <th>Stages</th>
-                  <th className="w-28">Duration</th>
+                  <th className="w-20 text-gray-200">Status</th>
+                  <th className="w-20 text-gray-200 text-center">Triggerer</th>
+                  <th className="text-gray-200">Stages</th>
+                  <th className="w-28 text-gray-200">Duration</th>
                 </tr>
               </thead>
               <tbody>
@@ -97,14 +97,14 @@ const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
           <img src={gitlabLogo} className="h-6 mx-3" alt="logo" />
           <div className="text-lg font-semibold">Dashboard</div>
         </div>
-        <i className="icon-folder cursor-pointer py-1 px-4" onClick={() => history.push('projects')}></i>
+        <i className="icon-folder cursor-pointer py-1 px-8" onClick={() => history.push('projects')}></i>
       </div>
       {
         isLoading ?
           <div className="flex justify-center items-center h-full">
             <Preloader />
           </div> :
-          <ul className="max-h-full overflow-y-visible">
+          <ul className="content-footer-height overflow-y-scroll">
             {bookmarkProjects.map((project: IProject) => <ProjectItem key={project.id} project={project} />)}
           </ul>
       }

@@ -5,4 +5,7 @@
     .border-spacing-5 {
         border-spacing: 5px;
     }
+    .content-footer-height {
+        max-height: calc(100% - 35px);
+    }
 }

@@ -23,7 +23,7 @@ const PipelineComponent: React.FC<IProps> = ({ pipeline }) => {
           pipeline.user.avatarUrl.includes('gravatar') ?
             pipeline.user.avatarUrl :
             `${GLOBAL_BASE_URL}${pipeline.user.avatarUrl}`
-        } alt={pipeline.user.name} title={pipeline.user.name} className="rounded-md w-6 h-6 block m-auto" />
+        } alt={pipeline.user.name} title={pipeline.user.name} className="rounded-full w-6 h-6 block m-auto" />
       </td>
       <td className="stage-cell">
         <div className="gl-display-inline">
@@ -47,13 +47,13 @@ const PipelineComponent: React.FC<IProps> = ({ pipeline }) => {
       <td>
         <div>
           <div className="flex items-center">
-            <svg className="w-3 h-3" fill="white">
+            <svg className="w-3 h-3">
               <use href={`${gitlabLogo}\#timer`} ></use>
             </svg>
             <div className="ml-2">00:04:29</div>
           </div>
           {pipeline.complete && <div className="flex items-center">
-            <svg className="w-3 h-3" fill="white">
+            <svg className="w-3 h-3">
               <use href={`${gitlabLogo}\#calendar`} ></use>
             </svg>
             <div className="ml-2">

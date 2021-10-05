@@ -51,9 +51,9 @@ const ProjectsComponent: React.FC<IProps> = ({ history }) => {
     return (
       <li className="flex justify-between items-center py-2 px-3 mb-1 rounded-md hover:bg-gray-700">
         <div className="flex items-center">
-          <div className="w-8 h-8 p-1 mr-2 text-center text-base rounded-md bg-blue-300">{project.name.substring(0, 1).toUpperCase()}</div>
+          <div className="w-8 h-8 p-1 mr-2 text-center text-base rounded-md bg-blue-300 text-white">{project.name.substring(0, 1).toUpperCase()}</div>
           <div>
-            <a href={project.webUrl} target="_blank" className="font-bold">{project.name}</a>
+            <a href={project.webUrl} target="_blank" className="text-gray-200 font-bold">{project.name}</a>
             <div className="flex items-center">
               <img src={project.group.avatarUrl} alt={project.group.name} className="w-4 h-4 rounded-full" />
               <span className="ml-1">{project.group.name}</span>
@@ -79,7 +79,7 @@ const ProjectsComponent: React.FC<IProps> = ({ history }) => {
           <div className="flex justify-center items-center h-full">
             <Preloader />
           </div> :
-          <ul className="max-h-full overflow-y-visible">
+          <ul className="content-footer-height overflow-y-scroll">
             {projects.map((project: IProject) => <ProjectItem key={project.id} project={project} />)}
           </ul>
       }
