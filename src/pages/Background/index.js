@@ -31,7 +31,13 @@ import { generateCodeVerifier, generateCodeChallengeFromVerifier } from './chall
     let storageCache = {};
 
     function is_user_signed_in() {
-        return storageCache.user_signed_in && storageCache.token_data;
+        return storageCache.user_signed_in && storageCache.token_data && tokenValid(storageCache.token_data);
+    }
+
+    function tokenValid(token = {}) {
+        const now = Date.now() / 1000;
+        const expiry = token.created_at + token.expires_in;
+        return now < expiry;
     }
 
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
