@@ -5,7 +5,10 @@ import './Dashboard.scss';
 
 import { IProject } from '../../types';
 import { getLocalStorageData, getPipeLines } from '../../services';
+import gitlabLogo from '../../assets/img/logo.svg';
 import Preloader from '../Preloader';
+import PipelineStatus from '../PipelineStatus';
+import Pipeline from '../Pipeline';
 
 interface IProps extends RouteComponentProps<any> { }
 
@@ -18,7 +21,14 @@ const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
       .then((data: any) => {
         if (data.bookmarkProjectIds) {
           getPipeLines(data.bookmarkProjectIds)
-            .then(response => setBookmarkProjects(response))
+            .then(response => {
+              const projectsList = response.map((project: IProject) => {
+                const bookmarkProject = bookmarkProjects.find((bookmarkProject: IProject) => bookmarkProject.id === project.id);
+                project.isExpanded = bookmarkProject?.isExpanded || false;
+                return project;
+              })
+              setBookmarkProjects(projectsList)
+            })
             .finally(() => setIsLoading(false))
         } else {
           history.push('projects');
@@ -26,16 +36,54 @@ const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
       })
   }
 
+  const toggleShowProject = (project: IProject) => {
+    const projectsList = bookmarkProjects.map((bProject: IProject) => {
+      if (bProject.id === project.id) {
+        bProject.isExpanded = !project.isExpanded;
+      } else {
+        bProject.isExpanded = false;
+      }
+      return bProject;
+    })
+    setBookmarkProjects(projectsList);
+  }
+
   useEffect(() => getBookmarkProjects(), []);
 
   const ProjectItem: React.FC<{ project: IProject }> = ({ project }) => {
     return (
-      <li className="flex justify-between items-center p-2 mb-1 rounded-md hover:bg-gray-700">
-        <div className="flex items-center">
-          <div className="w-8 h-8 p-1 mr-2 text-center text-base rounded-md bg-blue-300">{project.name.substring(0, 1).toUpperCase()}</div>
-          <div>
-            <span>{project.group.name} / </span>
-            <span className="font-bold">{project.name}</span>
+      <li className="py-2 px-3 mb-1 rounded-md hover:bg-gray-700">
+        <div className="overflow-hidden">
+          <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleShowProject(project)}>
+            <div className="flex items-center">
+              <div className="w-8 h-8 p-1 mr-2 text-center text-base rounded-md bg-blue-300">{project.name.substring(0, 1).toUpperCase()}</div>
+              <div>
+                <a href={project.webUrl} target="_blank" className="font-bold">{project.name}</a>
+                <div className="flex items-center">
+                  <img src={project.group.avatarUrl} alt={project.group.name} className="w-4 h-4 rounded-full" />
+                  <span>{project.group.name}</span>
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-between items-center w-28">
+              {project.pipelines.length && <PipelineStatus pipeline={project.pipelines[0]} />}
+              <i className={`p-1 ${project.isExpanded ? 'icon-chevron-up' : 'icon-chevron-down'}`}></i>
+            </div>
+          </div>
+          <div className={project.isExpanded ? 'block' : 'hidden'}>
+            <table className="mt-2 w-full border-separate border-spacing-5">
+              <thead>
+                <tr>
+                  <th className="w-20">Status</th>
+                  <th className="w-20 text-center">Triggerer</th>
+                  <th>Stages</th>
+                  <th className="w-28">Duration</th>
+                </tr>
+              </thead>
+              <tbody>
+                {project.pipelines.map(pipeline => <Pipeline key={pipeline.id} pipeline={pipeline} />)}
+              </tbody>
+            </table>
           </div>
         </div>
       </li>
@@ -44,16 +92,19 @@ const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
 
   return (
     <div className="h-full dashboard-section">
-      <div className="flex justify-between items-center">
-        <div className="text-lg font-semibold ml-4">Dashboard</div>
-        <i className="icon-star cursor-pointer py-1 px-4" onClick={() => history.push('projects')}></i>
+      <div className="flex justify-between items-center mb-2">
+        <div className="flex items-center">
+          <img src={gitlabLogo} className="h-6 mx-3" alt="logo" />
+          <div className="text-lg font-semibold">Dashboard</div>
+        </div>
+        <i className="icon-folder cursor-pointer py-1 px-4" onClick={() => history.push('projects')}></i>
       </div>
       {
         isLoading ?
           <div className="flex justify-center items-center h-full">
             <Preloader />
           </div> :
-          <ul className="max-h-full overflow-y-auto">
+          <ul className="max-h-full overflow-y-visible">
             {bookmarkProjects.map((project: IProject) => <ProjectItem key={project.id} project={project} />)}
           </ul>
       }

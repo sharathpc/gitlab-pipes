@@ -1,29 +1,69 @@
 import React from 'react';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Location } from 'history';
+import TimeAgo from 'timeago-react';
 import '../../assets/styles/tailwind.css';
 import './Pipeline.scss';
 
-interface IProps extends RouteComponentProps<any> {
-  token: string,
-  location: ILocationState
-}
-interface ILocationState extends Location<any> {
-  token: string,
-  apiUrl: string
+import { IPipeline } from '../../types';
+import gitlabLogo from '../../assets/img/icons.svg';
+import PipelineStatus from '../PipelineStatus';
+import { GLOBAL_BASE_URL } from '../../services';
+
+interface IProps {
+  pipeline: IPipeline
 }
 
-const PipelineComponent: React.FC<IProps> = ({ location }: IProps) => {
-  const TOKEN = location.state.token;
-  const API_URL = location.state.apiUrl;
-
+const PipelineComponent: React.FC<IProps> = ({ pipeline }) => {
   return (
-    <div className="pipeline-section">
-      <div>Pipeline</div>
-      <div>{TOKEN}</div>
-      <div>{API_URL}</div>
-    </div>
+    <tr className="pipeline-section">
+      <td>
+        <PipelineStatus pipeline={pipeline} />
+      </td>
+      <td>
+        <img src={
+          pipeline.user.avatarUrl.includes('gravatar') ?
+            pipeline.user.avatarUrl :
+            `${GLOBAL_BASE_URL}${pipeline.user.avatarUrl}`
+        } alt={pipeline.user.name} title={pipeline.user.name} className="rounded-md w-6 h-6 block m-auto" />
+      </td>
+      <td className="stage-cell">
+        <div className="gl-display-inline">
+          {
+            pipeline.stages.map(stage =>
+              <a href={`${GLOBAL_BASE_URL}${stage.job?.detailedStatus?.detailsPath}`} target="_blank" key={stage.id} className="stage-container">
+                <div className="btn-group" title={`${stage.name}: ${stage.status}`}>
+                  <button type="button" className={`btn btn-link btn-md mini-pipeline-graph-dropdown-toggle ci-status-icon-${stage.status} gl-button`}>
+                    <span className="gl-pointer-events-none">
+                      <svg className="gl-icon s16">
+                        <use href={`${gitlabLogo}\#status_${stage.status}_borderless`}></use>
+                      </svg>
+                    </span>
+                  </button>
+                </div>
+              </a>
+            )
+          }
+        </div>
+      </td>
+      <td>
+        <div>
+          <div className="flex items-center">
+            <svg className="w-3 h-3" fill="white">
+              <use href={`${gitlabLogo}\#timer`} ></use>
+            </svg>
+            <div className="ml-2">00:04:29</div>
+          </div>
+          {pipeline.complete && <div className="flex items-center">
+            <svg className="w-3 h-3" fill="white">
+              <use href={`${gitlabLogo}\#calendar`} ></use>
+            </svg>
+            <div className="ml-2">
+              <TimeAgo datetime={pipeline.updatedAt} />
+            </div>
+          </div>}
+        </div>
+      </td>
+    </tr>
   );
 };
 
-export default withRouter(PipelineComponent);
+export default PipelineComponent;

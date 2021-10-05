@@ -49,21 +49,20 @@ const ProjectsComponent: React.FC<IProps> = ({ history }) => {
 
   const ProjectItem: React.FC<{ project: IProject }> = ({ project }) => {
     return (
-      <li className="flex justify-between items-center p-2 mb-1 rounded-md hover:bg-gray-700">
+      <li className="flex justify-between items-center py-2 px-3 mb-1 rounded-md hover:bg-gray-700">
         <div className="flex items-center">
           <div className="w-8 h-8 p-1 mr-2 text-center text-base rounded-md bg-blue-300">{project.name.substring(0, 1).toUpperCase()}</div>
           <div>
-            <a href={project.webUrl} target="_blank">
-              <span>{project.group.name} / </span>
-              <span className="font-bold">{project.name}</span>
-            </a>
-            <div>
-              <TimeAgo datetime={project.lastActivityAt} />
+            <a href={project.webUrl} target="_blank" className="font-bold">{project.name}</a>
+            <div className="flex items-center">
+              <img src={project.group.avatarUrl} alt={project.group.name} className="w-4 h-4 rounded-full" />
+              <span className="ml-1">{project.group.name}</span>
             </div>
           </div>
         </div>
-        <div>
-          <i className={`cursor-pointer ${project.bookmarkInd ? 'icon-star' : 'icon-star-o'}`} onClick={() => toggleBookmarkProject(project.id, !project.bookmarkInd)}></i>
+        <div className="flex justify-between items-center w-44">
+          <TimeAgo datetime={project.lastActivityAt} />
+          <i className={`cursor-pointer ${project.bookmarkInd ? 'icon-bookmark' : 'icon-bookmark-o'}`} onClick={() => toggleBookmarkProject(project.id, !project.bookmarkInd)}></i>
         </div>
       </li>
     )
@@ -71,7 +70,7 @@ const ProjectsComponent: React.FC<IProps> = ({ history }) => {
 
   return (
     <div className="h-full projects-section">
-      <div className="flex items-center">
+      <div className="flex items-center mb-2">
         <i className="icon-arrow-circle-left cursor-pointer py-1 px-4" onClick={() => history.goBack()}></i>
         <div className="text-lg font-semibold">Projects List</div>
       </div>
@@ -80,7 +79,7 @@ const ProjectsComponent: React.FC<IProps> = ({ history }) => {
           <div className="flex justify-center items-center h-full">
             <Preloader />
           </div> :
-          <ul className="max-h-full overflow-y-auto">
+          <ul className="max-h-full overflow-y-visible">
             {projects.map((project: IProject) => <ProjectItem key={project.id} project={project} />)}
           </ul>
       }

@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import { IMessage } from "./types";
 
-let GLOBAL_BASE_URL: string
+export let GLOBAL_BASE_URL: string
 const axiosRequest: AxiosInstance = axios.create();
 
 axiosRequest.interceptors.response.use(
@@ -57,6 +57,7 @@ export const getPipeLines = async (projectIds: any) => {
                 nodes {
                     id
                     name
+                    avatarUrl
                     webUrl
                     lastActivityAt
                     group {
@@ -65,22 +66,55 @@ export const getPipeLines = async (projectIds: any) => {
                         avatarUrl
                         webUrl
                     }
-                    pipelines(first: 3) {
+                    pipelines(first: 2) {
                         nodes {
                             id
+                            createdAt
                             updatedAt
-                            jobs {
-                                nodes{
+                            status
+                            complete
+                            path
+                            detailedStatus {
+                                label
+                                icon
+                            }
+                            user {
+                                id
+                                name
+                                avatarUrl
+                            }
+                            stages {
+                                nodes {
                                     id
                                     name
+                                    status
+                                    jobs(first: 1) {
+                                        nodes {
+                                            id
+                                            detailedStatus {
+                                                detailsPath
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
-                }
+                  }
             }
         }`
-    }).then((response: any) => response.data.data.projects.nodes)
+    }).then((response: any) => {
+        return response.data.data.projects.nodes.map((project: any) => {
+            project.pipelines = project.pipelines.nodes.map((pipeline: any) => {
+                pipeline.stages = pipeline.stages.nodes.map((stage: any) => {
+                    stage.job = stage.jobs.nodes.length ? stage.jobs.nodes[0] : null;
+                    return stage;
+                });
+                return pipeline
+            })
+            return project;
+        })
+    })
 }
 
 export const setLocalStorageData = async (key: string, data: any) => {
