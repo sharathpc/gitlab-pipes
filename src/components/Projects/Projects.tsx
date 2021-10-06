@@ -62,7 +62,7 @@ const ProjectsComponent: React.FC<IProps> = ({ history }) => {
         </div>
         <div className="flex justify-between items-center w-44">
           <TimeAgo datetime={project.lastActivityAt} />
-          <i className={`cursor-pointer ${project.bookmarkInd ? 'icon-bookmark' : 'icon-bookmark-o'}`} onClick={() => toggleBookmarkProject(project.id, !project.bookmarkInd)}></i>
+          <i className={`cursor-pointer ${project.bookmarkInd ? 'icon-bookmark' : 'icon-bookmark-o'}`} title={project.bookmarkInd ? 'Remove' : 'Add'} onClick={() => toggleBookmarkProject(project.id, !project.bookmarkInd)}></i>
         </div>
       </li>
     )
@@ -71,7 +71,7 @@ const ProjectsComponent: React.FC<IProps> = ({ history }) => {
   return (
     <div className="h-full projects-section">
       <div className="flex items-center mb-2">
-        <i className="icon-arrow-circle-left cursor-pointer py-1 px-4" onClick={() => history.goBack()}></i>
+        <i className="icon-arrow-circle-left cursor-pointer py-1 px-4" title="Back to Dashboard" onClick={() => history.goBack()}></i>
         <div className="text-lg font-semibold">Projects List</div>
       </div>
       {

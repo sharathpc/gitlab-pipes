@@ -17,6 +17,7 @@ const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
   const [bookmarkProjects, setBookmarkProjects] = React.useState<IProject[]>([]);
 
   const getBookmarkProjects = () => {
+    setIsLoading(true);
     getLocalStorageData(['bookmarkProjectIds'])
       .then((data: any) => {
         if (data.bookmarkProjectIds) {
@@ -31,7 +32,7 @@ const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
             })
             .finally(() => setIsLoading(false))
         } else {
-          history.push('projects');
+          setIsLoading(false);
         }
       })
   }
@@ -97,16 +98,25 @@ const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
           <img src={gitlabLogo} className="h-6 mx-3" alt="logo" />
           <div className="text-lg font-semibold">Dashboard</div>
         </div>
-        <i className="icon-folder cursor-pointer py-1 px-8" onClick={() => history.push('projects')}></i>
+        {!!bookmarkProjects.length && <div>
+          <i className="icon-refresh cursor-pointer py-1 px-2" title="Refresh" onClick={() => getBookmarkProjects()}></i>
+          <i className="icon-folder cursor-pointer py-1 pr-8 pl-2" title="Projects" onClick={() => history.push('projects')}></i>
+        </div>}
       </div>
       {
         isLoading ?
           <div className="flex justify-center items-center h-full">
             <Preloader />
-          </div> :
-          <ul className="content-footer-height overflow-y-scroll">
-            {bookmarkProjects.map((project: IProject) => <ProjectItem key={project.id} project={project} />)}
-          </ul>
+          </div> : (
+            bookmarkProjects.length ?
+              <ul className="content-footer-height overflow-y-scroll">
+                {bookmarkProjects.map((project: IProject) => <ProjectItem key={project.id} project={project} />)}
+              </ul> :
+              <div className="flex flex-col justify-center items-center h-full">
+                <div className="mb-3">No Projects selected</div>
+                <button className="text-xs rounded bg-blue-400 text-white px-2 py-1 hover:bg-blue-500 duration-100 ease-in-out" onClick={() => history.push('projects')}>Select Projects</button>
+              </div>
+          )
       }
     </div>
   );
