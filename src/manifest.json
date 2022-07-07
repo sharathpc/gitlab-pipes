@@ -1,7 +1,6 @@
 {
   "name": "GitLab Pipes",
   "manifest_version": 3,
-  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkb7KlCpN4uaxaR1C0XUU9f8CO4R/JIb+ZgP4OF4KKxcJYoofcDrph4c+YVWHeUZGpXWsir6oMXJcCoQprcjkuCxTW9TnKJ3+IrJ7FyrxJuZqvgbhlt7tRkuBrbYLUQSOEIdvhaxmThPLJGvvj6dVdA47MsNCIvpfWe9ybSvzO9sgNXKBRqwduKank2v5iy5q3isj+T0AzmmYSIC9i3KYAy+YR0ZpB8WFvcp/wgen/RLUqPzA2mPZwq4BRQ1W41PqhmDJ60HiCN2yHjEe7u7qOgRvidbWd2R3+DYaSp5Cx8sQ11F4V2uahuI5dRmlvPjPlbrWUpkBguI5FoeUu9m3ewIDAQAB",
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",
