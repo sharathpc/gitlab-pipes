@@ -16,7 +16,6 @@
     "service_worker": "background.bundle.js"
   },
   "permissions": [
-    "identity",
     "storage"
   ],
   "host_permissions": [
