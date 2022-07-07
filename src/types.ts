@@ -1,6 +1,6 @@
 export interface IMessage {
     status: boolean;
-    baseUrl: string;
+    baseURL: string;
     token: string;
 }
 

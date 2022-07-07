@@ -10,9 +10,9 @@ axiosRequest.interceptors.response.use(
         const originalRequest = error.config;
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
-            chrome.runtime.sendMessage({ action: 'refresh' }, (res: IMessage) => {
+            chrome.runtime.sendMessage({ action: 'credentials' }, (res: IMessage) => {
                 if (res.status) {
-                    updateRequestDetails(res.baseUrl, res.token);
+                    updateRequestDetails(res.baseURL, res.token);
                     return axios.request(error.config);
                 }
             });
@@ -31,7 +31,7 @@ export const updateRequestDetails = (BASE_URL: string, TOKEN: string) => {
 export const getProjects = async () => {
     return await axiosRequest.post(`/graphql`, {
         query: `{
-            projects(membership: true, first: 50) {
+            projects(membership: true, first: 100) {
                 nodes {
                     id
                     name

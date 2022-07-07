@@ -5,6 +5,7 @@ import Dashboard from '../../components/Dashboard';
 import Pipeline from '../../components/Pipeline';
 import Projects from '../../components/Projects';
 import Login from '../../components/Login';
+import Footer from '../../components/Footer';
 
 const Popup: React.FC = () => {
   return (
@@ -17,11 +18,7 @@ const Popup: React.FC = () => {
           <Route path='/' component={Login} />
         </Switch>
       </Router>
-      <div className="py-2 text-center">
-        <span className="font-semibold">GitLab Pipes</span>
-        <span className="mx-1">made with</span>
-        <i className="icon-heart text-red-600 align-middle"></i>
-      </div>
+      <Footer />
     </>
   );
 };

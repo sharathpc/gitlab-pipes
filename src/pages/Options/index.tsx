@@ -5,7 +5,7 @@ import './index.scss';
 import Options from './Options';
 
 render(
-  <Options title={'settings'} />,
+  <Options />,
   window.document.querySelector('#app-container')
 );
 

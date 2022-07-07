@@ -7,6 +7,7 @@ module.exports = {
     extend: {},
     colors: {
       white: colors.white,
+      black: colors.black,
       orange: colors.orange,
       blue: colors.blue,
       gray: colors.gray,
@@ -15,7 +16,9 @@ module.exports = {
     }
   },
   variants: {
-    extend: {},
+    extend: {
+      opacity: ['disabled']
+    }
   },
   plugins: [],
 }

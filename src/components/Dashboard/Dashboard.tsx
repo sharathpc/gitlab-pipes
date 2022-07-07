@@ -16,8 +16,8 @@ const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [bookmarkProjects, setBookmarkProjects] = React.useState<IProject[]>([]);
 
-  const getBookmarkProjects = () => {
-    setIsLoading(true);
+  const getBookmarkProjects = (loading: boolean = false) => {
+    setIsLoading(loading);
     getLocalStorageData(['bookmarkProjectIds'])
       .then((data: any) => {
         if (data.bookmarkProjectIds) {
@@ -28,9 +28,12 @@ const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
                 project.isExpanded = bookmarkProject?.isExpanded || false;
                 return project;
               })
-              setBookmarkProjects(projectsList)
+              setBookmarkProjects(projectsList);
             })
-            .finally(() => setIsLoading(false))
+            .finally(() => {
+              setTimeout(() => getBookmarkProjects(), 10000);
+              setIsLoading(false);
+            })
         } else {
           setIsLoading(false);
         }
@@ -49,7 +52,14 @@ const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
     setBookmarkProjects(projectsList);
   }
 
-  useEffect(() => getBookmarkProjects(), []);
+  const openOptions = () => {
+    chrome.tabs.create({
+      url: chrome.runtime.getURL('/options.html')
+    });
+  }
+
+  useEffect(() => getBookmarkProjects(true), []);
+
 
   const ProjectItem: React.FC<{ project: IProject }> = ({ project }) => {
     return (
@@ -99,8 +109,8 @@ const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
           <div className="text-lg font-semibold">Dashboard</div>
         </div>
         {!!bookmarkProjects.length && <div>
-          <i className="icon-refresh cursor-pointer py-1 px-2" title="Refresh" onClick={() => getBookmarkProjects()}></i>
-          <i className="icon-folder cursor-pointer py-1 pr-8 pl-2" title="Projects" onClick={() => history.push('projects')}></i>
+          <i className="icon-folder cursor-pointer py-1 px-2" title="Projects" onClick={() => history.push('projects')}></i>
+          <i className="icon-cog cursor-pointer py-1 pr-8 pl-2" title="Options" onClick={() => openOptions()}></i>
         </div>}
       </div>
       {
