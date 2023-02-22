@@ -28,10 +28,10 @@ export const updateRequestDetails = (BASE_URL: string, TOKEN: string) => {
     (axiosRequest.defaults.headers as any).common['Authorization'] = `Bearer ${TOKEN}`;
 }
 
-export const getProjects = async () => {
+export const getProjects = async (projectName: string) => {
     return await axiosRequest.post(`/graphql`, {
         query: `{
-            projects(membership: true, first: 100) {
+            projects(membership: true, search: "${projectName}", first: 50, sort: "name_asc") {
                 nodes {
                     id
                     name
@@ -74,6 +74,7 @@ export const getPipeLines = async (projectIds: any) => {
                             status
                             complete
                             path
+                            duration
                             detailedStatus {
                                 label
                                 icon

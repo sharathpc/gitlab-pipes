@@ -30,6 +30,7 @@ export interface IPipeline {
     status: string,
     complete: boolean,
     path: string,
+    duration: number,
     detailedStatus: {
         label: string,
         icon: string

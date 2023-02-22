@@ -13,6 +13,13 @@ interface IProps {
 }
 
 const PipelineComponent: React.FC<IProps> = ({ pipeline }) => {
+  const secondsToTime = (e: number) => {
+    const h = Math.floor(e / 3600).toString().padStart(2, '0'),
+      m = Math.floor(e % 3600 / 60).toString().padStart(2, '0'),
+      s = Math.floor(e % 60).toString().padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  }
+
   return (
     <tr className="pipeline-section">
       <td>
@@ -50,7 +57,7 @@ const PipelineComponent: React.FC<IProps> = ({ pipeline }) => {
             <svg className="w-3 h-3">
               <use href={`${gitlabLogo}\#timer`} ></use>
             </svg>
-            <div className="ml-2">00:04:29</div>
+            <div className="ml-2">{secondsToTime(pipeline.duration)}</div>
           </div>
           {pipeline.complete && <div className="flex items-center">
             <svg className="w-3 h-3">

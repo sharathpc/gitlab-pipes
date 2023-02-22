@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import TimeAgo from 'timeago-react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+import debounce from "lodash.debounce";
 import '../../assets/styles/tailwind.css';
 import './Projects.scss';
 
@@ -13,11 +14,13 @@ interface IProps extends RouteComponentProps<any> { }
 const ProjectsComponent: React.FC<IProps> = ({ history }) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [projects, setProjects] = React.useState<IProject[]>([]);
+  const [projectSearch, setProjectSearch] = React.useState<string>('');
 
-  const getGitLabProjects = () => {
+  const getGitLabProjects = (projectSearch: string) => {
+    setIsLoading(true);
     getLocalStorageData(['bookmarkProjectIds'])
       .then((data: any) => {
-        getProjects()
+        getProjects(projectSearch)
           .then((response: IProject[]) => {
             const projectsList = response.map(project => {
               const projectExist = data.bookmarkProjectIds?.find((projectId: string) => projectId === project.id);
@@ -45,7 +48,9 @@ const ProjectsComponent: React.FC<IProps> = ({ history }) => {
     setLocalStorageData('bookmarkProjectIds', bookmarkProjectIds);
   }
 
-  useEffect(() => getGitLabProjects(), []);
+  const debounceFn = useCallback(debounce(getGitLabProjects, 500), []);
+
+  useEffect(() => debounceFn(projectSearch), [projectSearch]);
 
   const ProjectItem: React.FC<{ project: IProject }> = ({ project }) => {
     return (
@@ -70,18 +75,34 @@ const ProjectsComponent: React.FC<IProps> = ({ history }) => {
 
   return (
     <div className="h-full projects-section">
-      <div className="flex items-center mb-2">
-        <i className="icon-arrow-circle-left cursor-pointer py-1 px-4" title="Back to Dashboard" onClick={() => history.goBack()}></i>
-        <div className="text-lg font-semibold">Projects List</div>
+      <div className="mb-2">
+        <div className="flex items-center mb-1">
+          <i className="icon-arrow-circle-left text-base cursor-pointer leading-none px-3" title="Back to Dashboard" onClick={() => history.goBack()}></i>
+          <div className="text-lg font-semibold">Projects List</div>
+        </div>
+        <div className="mx-2">
+          <input
+            type="text"
+            className="border rounded w-full py-1.5 px-3 text-white focus:outline-none focus:shadow-outline bg-gray-700 border-gray-600"
+            placeholder="Search..."
+            value={projectSearch}
+            onChange={($event) => setProjectSearch($event.target.value)}
+          />
+        </div>
       </div>
       {
         isLoading ?
-          <div className="flex justify-center items-center h-full">
+          <div className="flex justify-center items-center h-full content-footer-height">
             <Preloader />
-          </div> :
-          <ul className="content-footer-height overflow-y-scroll">
-            {projects.map((project: IProject) => <ProjectItem key={project.id} project={project} />)}
-          </ul>
+          </div> : (
+            projects.length ?
+              <ul className="content-footer-height overflow-y-scroll">
+                {projects.map((project: IProject) => <ProjectItem key={project.id} project={project} />)}
+              </ul> :
+              <div className="flex flex-col justify-center items-center h-full content-footer-height">
+                <div className="mb-3">No Projects available</div>
+              </div>
+          )
       }
     </div>
   );

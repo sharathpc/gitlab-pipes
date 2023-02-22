@@ -12,8 +12,11 @@ import Pipeline from '../Pipeline';
 
 interface IProps extends RouteComponentProps<any> { }
 
+let timeoutId: NodeJS.Timeout;
+
 const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [projectsList, setProjectsList] = React.useState<IProject[]>([]);
   const [bookmarkProjects, setBookmarkProjects] = React.useState<IProject[]>([]);
 
   const getBookmarkProjects = (loading: boolean = false) => {
@@ -22,16 +25,9 @@ const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
       .then((data: any) => {
         if (data.bookmarkProjectIds) {
           getPipeLines(data.bookmarkProjectIds)
-            .then(response => {
-              const projectsList = response.map((project: IProject) => {
-                const bookmarkProject = bookmarkProjects.find((bookmarkProject: IProject) => bookmarkProject.id === project.id);
-                project.isExpanded = bookmarkProject?.isExpanded || false;
-                return project;
-              })
-              setBookmarkProjects(projectsList);
-            })
+            .then(response => setProjectsList(response))
             .finally(() => {
-              setTimeout(() => getBookmarkProjects(), 10000);
+              timeoutId = setTimeout(() => getBookmarkProjects(), 10000);
               setIsLoading(false);
             })
         } else {
@@ -40,8 +36,20 @@ const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
       })
   }
 
+  const processProjects = (searchString: string = '') => {
+    let processList: IProject[] = [];
+    projectsList.forEach((project: IProject) => {
+      if (project.name.includes(searchString)) {
+        const bookmarkProject = bookmarkProjects.find((bookmarkProject: IProject) => bookmarkProject.id === project.id);
+        project.isExpanded = bookmarkProject?.isExpanded || false;
+        processList.push(project);
+      }
+    })
+    setBookmarkProjects(processList);
+  }
+
   const toggleShowProject = (project: IProject) => {
-    const projectsList = bookmarkProjects.map((bProject: IProject) => {
+    const processList = bookmarkProjects.map((bProject: IProject) => {
       if (bProject.id === project.id) {
         bProject.isExpanded = !project.isExpanded;
       } else {
@@ -49,7 +57,7 @@ const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
       }
       return bProject;
     })
-    setBookmarkProjects(projectsList);
+    setBookmarkProjects(processList);
   }
 
   const openOptions = () => {
@@ -58,7 +66,12 @@ const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
     });
   }
 
-  useEffect(() => getBookmarkProjects(true), []);
+  useEffect(() => processProjects(), [projectsList]);
+
+  useEffect(() => {
+    getBookmarkProjects(true);
+    return () => clearTimeout(timeoutId);
+  }, []);
 
 
   const ProjectItem: React.FC<{ project: IProject }> = ({ project }) => {
@@ -103,26 +116,36 @@ const DashboardComponent: React.FC<IProps> = ({ history }: IProps) => {
 
   return (
     <div className="h-full dashboard-section">
-      <div className="flex justify-between items-center mb-2">
-        <div className="flex items-center">
-          <img src={gitlabLogo} className="h-6 mx-3" alt="logo" />
-          <div className="text-lg font-semibold">Dashboard</div>
+      <div className="mb-2">
+        <div className="flex justify-between items-center mb-1">
+          <div className="flex items-center">
+            <img src={gitlabLogo} className="h-6 mx-3" alt="logo" />
+            <div className="text-lg font-semibold">Dashboard</div>
+          </div>
+          {!!bookmarkProjects.length && <div>
+            <i className="icon-folder cursor-pointer py-1 px-2" title="Projects" onClick={() => history.push('projects')}></i>
+            <i className="icon-cog cursor-pointer py-1 pr-8 pl-2" title="Options" onClick={() => openOptions()}></i>
+          </div>}
         </div>
-        {!!bookmarkProjects.length && <div>
-          <i className="icon-folder cursor-pointer py-1 px-2" title="Projects" onClick={() => history.push('projects')}></i>
-          <i className="icon-cog cursor-pointer py-1 pr-8 pl-2" title="Options" onClick={() => openOptions()}></i>
-        </div>}
+        <div className="mx-2">
+          <input
+            type="text"
+            className="border rounded w-full py-1.5 px-3 text-white focus:outline-none focus:shadow-outline bg-gray-700 border-gray-600"
+            placeholder="Search..."
+            onChange={($event) => processProjects($event.target.value)}
+          />
+        </div>
       </div>
       {
         isLoading ?
-          <div className="flex justify-center items-center h-full">
+          <div className="flex justify-center items-center h-full content-footer-height">
             <Preloader />
           </div> : (
             bookmarkProjects.length ?
               <ul className="content-footer-height overflow-y-scroll">
                 {bookmarkProjects.map((project: IProject) => <ProjectItem key={project.id} project={project} />)}
               </ul> :
-              <div className="flex flex-col justify-center items-center h-full">
+              <div className="flex flex-col justify-center items-center h-full content-footer-height">
                 <div className="mb-3">No Projects selected</div>
                 <button className="text-xs rounded bg-blue-400 text-white px-2 py-1 hover:bg-blue-500 duration-100 ease-in-out" onClick={() => history.push('projects')}>Select Projects</button>
               </div>

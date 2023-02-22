@@ -1,11 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer utilities {
     .border-spacing-5 {
         border-spacing: 5px;
     }
+
     .content-footer-height {
-        max-height: calc(100% - 35px);
+        max-height: calc(100% - 70px);
     }
 }
