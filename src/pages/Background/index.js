@@ -31,7 +31,10 @@
                     }
                 }
             } else {
-                sendResponse({ status: false });
+                sendResponse({
+                    status: false,
+                    message: 'No Credentials'
+                });
             }
         })
         return true;
@@ -41,11 +44,10 @@
         fetch(`${baseURL}/api/v4/user?private_token=${token}`, {
             method: 'GET'
         })
-            .then(response => response.json())
-            .then(jsondata => {
-                if (jsondata.error) {
+            .then(response => {
+                if (response.status !== 200) {
                     chrome.storage.local.clear();
-                    sendResponse({ status: false });
+                    throw 'Invalid credentials';
                 } else {
                     storageCache = { token, baseURL };
                     chrome.storage.local.set(storageCache);
@@ -55,6 +57,11 @@
                     });
                 }
             })
-            .catch(err => console.log(err));
+            .catch(error =>
+                sendResponse({
+                    status: false,
+                    message: error
+                })
+            );
     }
 })();

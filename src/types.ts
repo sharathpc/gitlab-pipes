@@ -2,6 +2,7 @@ export interface IMessage {
     status: boolean;
     baseURL: string;
     token: string;
+    message: any;
 }
 
 export interface IProject {
