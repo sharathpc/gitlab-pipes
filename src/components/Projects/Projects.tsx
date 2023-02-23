@@ -33,19 +33,25 @@ const ProjectsComponent: React.FC<IProps> = ({ history }) => {
       });
   }
 
-  const toggleBookmarkProject = (projectId: string, bookmarkInd: boolean) => {
-    let bookmarkProjectIds: string[] = [];
-    const updatedProjects = projects.map((project: IProject) => {
-      if (project.id === projectId) {
-        project.bookmarkInd = bookmarkInd;
-      }
-      if (project.bookmarkInd) {
-        bookmarkProjectIds.push(project.id);
-      }
-      return project;
-    })
-    setProjects(updatedProjects);
-    setLocalStorageData('bookmarkProjectIds', bookmarkProjectIds);
+  const toggleBookmarkProject = async (projectId: string, bookmarkInd: boolean) => {
+    getLocalStorageData(['bookmarkProjectIds'])
+      .then((data: any) => {
+        let bookmarkProjectIds: string[] = data.bookmarkProjectIds || [];
+        const updatedProjects = projects.map((project: IProject) => {
+          if (project.id === projectId) {
+            const projectIndex = bookmarkProjectIds.indexOf(projectId);
+            project.bookmarkInd = bookmarkInd;
+            if (project.bookmarkInd) {
+              bookmarkProjectIds.push(project.id);
+            } else if (projectIndex > -1) {
+              bookmarkProjectIds.splice(projectIndex, 1);
+            }
+          }
+          return project;
+        })
+        setProjects(updatedProjects);
+        setLocalStorageData('bookmarkProjectIds', bookmarkProjectIds);
+      });
   }
 
   const debounceFn = useCallback(debounce(getGitLabProjects, 500), []);
