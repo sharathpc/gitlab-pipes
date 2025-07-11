@@ -6,7 +6,11 @@
 
 **GitLab Pipes** is a lightweight browser extension that allows you to bookmark multiple GitLab projects and view their latest CI/CD pipeline statuses directly in your browser.
 
-![Screenshot](https://github.com/sharathpc/gitlab-pipes/blob/main/assets/screenshot.png?raw=true)
+## ✨ Screenshots
+
+![Screenshot](https://github.com/sharathpc/gitlab-pipes/blob/screenshots/screenshot-1.png?raw=true)
+![Screenshot](https://github.com/sharathpc/gitlab-pipes/blob/screenshots/screenshot-2.png?raw=true)
+![Screenshot](https://github.com/sharathpc/gitlab-pipes/blob/screenshots/screenshot-3.png?raw=true)
 
 ---
 
@@ -45,6 +49,8 @@ yarn build
 - Click Load Unpacked
 - Select the dist/ directory
 
+---
+
 ### 🔐 Authentication
 On first use, you'll be prompted to enter your GitLab Personal Access Token.
 
@@ -52,12 +58,15 @@ On first use, you'll be prompted to enter your GitLab Personal Access Token.
 
 It is stored locally in your browser and never sent anywhere else.
 
+---
 
 ### 📦 Tech Stack
 - React
 - Vite
 - GitLab GraphQL API
 - Chrome Extension Manifest V3
+
+---
 
 ### 🛣 Roadmap Ideas
 - Manual pipeline trigger button
@@ -66,6 +75,8 @@ It is stored locally in your browser and never sent anywhere else.
 - Token and bookmarks sync using GitLab snippets
 - Have suggestions? [Open an issue](https://github.com/sharathpc/gitlab-pipes/issues)!
 
+---
+
 ### 🤝 Contributing
 1. Fork the repo
 2. Create your feature branch (git checkout -b feature/awesome-feature)
@@ -73,5 +84,7 @@ It is stored locally in your browser and never sent anywhere else.
 4. Push to the branch (git push origin feature/awesome-feature)
 5. Open a Pull Request
 
+---
+
 ### 📄 License
-This project is licensed under the MIT License - see the [LICENSE](https://opensource.org/license/mit) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/sharathpc/gitlab-pipes/blob/master/LICENSE) file for details.
