@@ -8,9 +8,11 @@
 
 ## ✨ Screenshots
 
-![Screenshot](https://github.com/sharathpc/gitlab-pipes/blob/screenshots/screenshot-1.png?raw=true)
-![Screenshot](https://github.com/sharathpc/gitlab-pipes/blob/screenshots/screenshot-2.png?raw=true)
-![Screenshot](https://github.com/sharathpc/gitlab-pipes/blob/screenshots/screenshot-3.png?raw=true)
+<div>
+  <img src="https://github.com/sharathpc/gitlab-pipes/blob/master/screenshots/screenshot-1.png" width="256">
+  <img src="https://github.com/sharathpc/gitlab-pipes/blob/master/screenshots/screenshot-2.png" width="325">
+  <img src="https://github.com/sharathpc/gitlab-pipes/blob/master/screenshots/screenshot-3.png" width="325">
+</div>
 
 ---
 
